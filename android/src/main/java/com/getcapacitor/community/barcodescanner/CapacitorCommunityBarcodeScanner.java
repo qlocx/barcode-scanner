@@ -290,7 +290,7 @@ public class CapacitorCommunityBarcodeScanner extends Plugin implements ImageAna
         }
     }
 
-    @Override
+        @Override
     public void analyze(@NonNull ImageProxy image) {
         @SuppressLint("UnsafeOptInUsageError")
         Image mediaImage = image.getImage();
@@ -308,39 +308,23 @@ public class CapacitorCommunityBarcodeScanner extends Plugin implements ImageAna
                             for (Barcode barcode : barcodes) {
                                 PluginCall call = getSavedCall();
 
-                                Rect bounds = barcode.getBoundingBox();
-                                Point[] corners = barcode.getCornerPoints();
                                 String rawValue = barcode.getRawValue();
 
-                                // add vibration logic here
-
-                                String s = bounds.flattenToString();
                                 Log.e(MLKIT_TAG, "content : " + rawValue);
-                                //                                                    Log.e(MLKIT_TAG,"corners : " + corners.toString());
-                                Log.e(MLKIT_TAG, "bounds : " + bounds.flattenToString());
 
-                                if (!scannedResult.contains(rawValue)) {
-                                    Log.e(MLKIT_TAG, "Added Into ArrayList : " + rawValue);
+                                JSObject jsObject = new JSObject();
+                                Log.e(MLKIT_TAG, "onSuccess: boundArr");
+                                jsObject.put("hasContent", true);
+                                jsObject.put("content", rawValue);
+                                jsObject.put("format", null);
 
-                                    scannedResult.add(rawValue);
-
-                                    JSObject jsObject = new JSObject();
-                                    int[] boundArr = { bounds.top, bounds.bottom, bounds.right, bounds.left };
-                                    Log.e(MLKIT_TAG, "onSuccess: boundArr");
-                                    jsObject.put("hasContent", true);
-                                    jsObject.put("content", rawValue);
-                                    jsObject.put("format", null);
-                                    //                                                        jsObject.put("corners",corners);
-                                    jsObject.put("bounds", s);
-
-                                    if (call != null && !call.isKeptAlive()) {
-                                        destroy();
-                                    }
-                                    try {
-                                        call.resolve(jsObject);
-                                    } catch (Exception e) {
-                                        Log.d("temp", "test");
-                                    }
+                                if (call != null && !call.isKeptAlive()) {
+                                    destroy();
+                                }
+                                try {
+                                    call.resolve(jsObject);
+                                } catch (Exception e) {
+                                    Log.d("temp", "test");
                                 }
                             }
                         }
@@ -365,6 +349,7 @@ public class CapacitorCommunityBarcodeScanner extends Plugin implements ImageAna
                 );
         }
     }
+
 
     @PluginMethod
     public void vibrate(PluginCall call) {
