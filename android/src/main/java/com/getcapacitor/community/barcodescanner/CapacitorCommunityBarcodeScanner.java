@@ -336,7 +336,11 @@ public class CapacitorCommunityBarcodeScanner extends Plugin implements ImageAna
                                     if (call != null && !call.isKeptAlive()) {
                                         destroy();
                                     }
-                                    call.resolve(jsObject);
+                                    try {
+                                        call.resolve(jsObject);
+                                    } catch (Exception e) {
+                                        Log.d("temp", "test");
+                                    }
                                 }
                             }
                         }
